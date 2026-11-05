@@ -65,10 +65,10 @@ pipeline {
                     echo "Desplegando servicio en contenedor de pruebas controlado..."
                     docker rm -f ${APP_NAME} 2>/dev/null || true
                     docker run -d --name ${APP_NAME} -p 5001:5000 \
-                      -v $(pwd):/app -w /app python:3.9-slim \
+                      -v formativa11_jenkins_data:/data -w /data/workspace/actividad-3-3-2-dependencias python:3.9-slim \
                       sh -c "pip install -r requirements.txt && python app.py" || echo "Despliegue simulado exitoso."
-                    sleep 3
-                    docker ps --filter "name=${APP_NAME}" || true
+                    sleep 4
+                    docker ps --filter "name=${APP_NAME}"
                 '''
             }
         }
