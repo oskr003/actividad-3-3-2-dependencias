@@ -41,7 +41,7 @@ pipeline {
 
         stage('Dependency Management') {
             steps {
-                echo '=== Gestión de dependencias y actualizaciones seguras (Pipenv) ==='
+                echo '=== Gestión de dependencias y actualizaciones seguras (Pipenv & SCA) ==='
                 sh '''
                     echo "--- 1. Instalación de dependencias administradas ---"
                     pipenv install
@@ -49,11 +49,11 @@ pipeline {
                     echo "--- 2. Árbol de dependencias (pipenv graph) ---"
                     pipenv graph
 
-                    echo "--- 3. Verificación y aplicación de actualizaciones seguras ---"
-                    pipenv update || true
+                    echo "--- 3. Auditoría de seguridad de dependencias (SCA con pip-audit) ---"
+                    pip-audit -r requirements.txt || true
 
-                    echo "--- 4. Monitoreo y auditoría de seguridad de dependencias ---"
-                    pipenv check || true
+                    echo "--- 4. Verificación y aplicación de actualizaciones seguras ---"
+                    pipenv update || true
                 '''
             }
         }
