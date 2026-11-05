@@ -11,8 +11,8 @@ pipeline {
                 echo '=== Compilando y preparando entorno de dependencias ==='
                 sh '''
                     echo "Verificando herramientas del entorno..."
-                    python3 --version || true
-                    pip3 install --upgrade pip pipenv pytest || true
+                    python3 --version
+                    pipenv --version
                     python3 -m py_compile app.py test_app.py
                     echo "Sintaxis y compilación del código fuente verificadas exitosamente."
                 '''
@@ -23,7 +23,7 @@ pipeline {
             steps {
                 echo '=== Ejecutando pruebas unitarias con pytest ==='
                 sh '''
-                    pipenv run pytest -v test_app.py || pytest -v test_app.py || python3 -m unittest test_app.py || echo "Sin tests definidos"
+                    pipenv run pytest -v test_app.py || echo "Sin tests definidos"
                 '''
             }
         }
@@ -44,10 +44,10 @@ pipeline {
                 echo '=== Gestión de dependencias y actualizaciones seguras (Pipenv) ==='
                 sh '''
                     echo "--- 1. Instalación de dependencias administradas ---"
-                    pipenv install || pip install -r requirements.txt
+                    pipenv install
 
                     echo "--- 2. Árbol de dependencias (pipenv graph) ---"
-                    pipenv graph || true
+                    pipenv graph
 
                     echo "--- 3. Verificación y aplicación de actualizaciones seguras ---"
                     pipenv update || true
@@ -68,7 +68,6 @@ pipeline {
                       -v $(pwd):/app -w /app python:3.9-slim \
                       sh -c "pip install -r requirements.txt && python app.py" || echo "Despliegue simulado exitoso."
                     sleep 3
-                    echo "Verificando estado del contenedor..."
                     docker ps --filter "name=${APP_NAME}" || true
                 '''
             }
